@@ -36,18 +36,16 @@ Napi::String CheckPrivilege(const Napi::CallbackInfo& info) {
 
                 result += " " + Utf16ToUtf8(currentUsername);
 
-                LPUSER_INFO_3 pUserInfo3;
-                NET_API_STATUS nStatusUserInfo = NetUserGetInfo(NULL, pTmpBuf->usri2_name, 3, (LPBYTE*)&pUserInfo3);
+                LPUSER_INFO_3 pUserInfo;
+                NET_API_STATUS nStatusUserInfo = NetUserGetInfo(NULL, pTmpBuf->usri2_name, 3, (LPBYTE*)&pUserInfo);
 
                 if (nStatusUserInfo == NERR_Success) {
-                    DWORD userPrivilege = pUserInfo3->usri3_priv;
+                    DWORD userPrivilege = pUserInfo->usri3_priv;
 
                     result += ":" + std::to_string(userPrivilege);
 
-                    NetApiBufferFree(pUserInfo3);
-                } else {
-                    result += ":3";
-                }
+                    NetApiBufferFree(pUserInfo);
+                } 
 
                 pTmpBuf++;
             }
